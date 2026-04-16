@@ -437,6 +437,26 @@
       color: var(--text-muted);
       margin-top: 2px;
     }
+    .step-subitems {
+      list-style: none;
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .step-subitems li {
+      font-size: 11px;
+      color: #94A3B8;
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.4;
+    }
+    .step-subitems li::before {
+      content: '–';
+      position: absolute;
+      left: 2px;
+      color: #CBD5E1;
+    }
 
     .step.active-step {
       background: linear-gradient(90deg, #E6FBF3 0%, transparent 100%);
@@ -652,6 +672,13 @@
             <div class="step-text">Zpracování závěrečných zpráv</div>
           </div>
         </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Online schůzka k prezentaci závěrů a shrnutí fáze projektu</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -682,6 +709,10 @@
         <div class="steps-title">Plánované aktivity</div>
         <div class="step pending-step">
           <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">KickOff schůzka</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
           <div class="step-text-wrap"><div class="step-text">Návrh cílové struktury intranetu</div></div>
         </div>
         <div class="step pending-step">
@@ -698,7 +729,21 @@
         </div>
         <div class="step pending-step">
           <div class="step-icon pending">○</div>
-          <div class="step-text-wrap"><div class="step-text">Governance dokument prostředí</div></div>
+          <div class="step-text-wrap">
+            <div class="step-text">Zpracování výstupů</div>
+            <ul class="step-subitems">
+              <li>Dokument architektury cílového řešení</li>
+              <li>Dokument návrhu struktury intranetu</li>
+              <li>Dokument návrhu struktury Microsoft Teams prostředí</li>
+              <li>Dokument návrhu modelu správy přístupových práv</li>
+              <li>Dokument návrhu řešení pro zaměstnance ve výrobě</li>
+              <li>Dokument Governance prostředí</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Osobní schůzka k prezentaci závěrů a shrnutí fáze projektu</div></div>
         </div>
       </div>
     </div>
