@@ -230,29 +230,35 @@
     }
     .timeline {
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    /* Horní řada – jen kroužky a spojovací linka */
+    .timeline-circles {
+      display: flex;
       align-items: center;
       position: relative;
     }
-    .timeline-phase {
+    .timeline-node {
       flex: 1;
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: center;
       position: relative;
-      z-index: 1;
     }
-    .timeline-phase:not(:last-child)::after {
+    .timeline-node:not(:last-child)::after {
       content: '';
       position: absolute;
-      top: 16px;
+      top: 50%;
       left: 50%;
       width: 100%;
       height: 3px;
+      transform: translateY(-50%);
       background: var(--border);
       z-index: 0;
     }
-    .timeline-phase.done:not(:last-child)::after  { background: var(--done); }
-    .timeline-phase.active:not(:last-child)::after {
+    .timeline-node.done:not(:last-child)::after  { background: var(--done); }
+    .timeline-node.active:not(:last-child)::after {
       background: linear-gradient(90deg, var(--done) 0%, var(--border) 100%);
     }
     .timeline-circle {
@@ -269,29 +275,34 @@
       color: var(--pending);
       position: relative;
       z-index: 2;
+      flex-shrink: 0;
     }
-    .timeline-phase.done .timeline-circle {
+    .timeline-node.done .timeline-circle {
       background: var(--done);
       border-color: var(--done);
       color: #fff;
     }
-    .timeline-phase.active .timeline-circle {
+    .timeline-node.active .timeline-circle {
       background: var(--active);
       border-color: var(--active);
       color: #fff;
       box-shadow: 0 0 0 5px rgba(0,206,124,.18);
     }
+    /* Dolní řada – jen popisky */
+    .timeline-labels {
+      display: flex;
+    }
     .timeline-label {
+      flex: 1;
       font-size: 11px;
       font-weight: 600;
       color: var(--text-muted);
-      margin-top: 8px;
       text-align: center;
-      max-width: 90px;
       line-height: 1.3;
     }
-    .timeline-phase.active .timeline-label { color: var(--active); }
-    .timeline-phase.done .timeline-label   { color: var(--done); }
+    .timeline-node.active ~ * .timeline-label,
+    .timeline-labels .label-active { color: var(--active); }
+    .timeline-labels .label-done   { color: var(--done); }
 
     /* ── PHASES GRID ── */
     .phases-grid {
@@ -561,20 +572,24 @@
       <div class="progress-pct">Fáze 1 ze 4 · odhad 3–4 měsíce</div>
     </div>
     <div class="timeline">
-      <div class="timeline-phase active">
-        <div class="timeline-circle">1</div>
-        <div class="timeline-label">Analýza</div>
+      <div class="timeline-circles">
+        <div class="timeline-node active">
+          <div class="timeline-circle">1</div>
+        </div>
+        <div class="timeline-node">
+          <div class="timeline-circle">2</div>
+        </div>
+        <div class="timeline-node">
+          <div class="timeline-circle">3</div>
+        </div>
+        <div class="timeline-node">
+          <div class="timeline-circle">4</div>
+        </div>
       </div>
-      <div class="timeline-phase">
-        <div class="timeline-circle">2</div>
+      <div class="timeline-labels">
+        <div class="timeline-label label-active">Analýza</div>
         <div class="timeline-label">Návrh architektury</div>
-      </div>
-      <div class="timeline-phase">
-        <div class="timeline-circle">3</div>
         <div class="timeline-label">Implementace</div>
-      </div>
-      <div class="timeline-phase">
-        <div class="timeline-circle">4</div>
         <div class="timeline-label">Adopce a školení</div>
       </div>
     </div>
