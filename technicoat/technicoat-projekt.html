@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technicoat – Modernizace digitálního prostředí</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:          #001f60;
+      --cyan:          #1ecad3;
+      --green1:        #00ce7c;
+      --green2:        #31ae62;
+      --active:        #00ce7c;
+      --active-bg:     #E6FBF3;
+      --done:          #31ae62;
+      --done-bg:       #E2F5EB;
+      --pending:       #6B7280;
+      --pending-bg:    #F3F4F6;
+      --white:         #ffffff;
+      --surface:       #F5F8FC;
+      --border:        #DDE4EF;
+      --text:          #001433;
+      --text-muted:    #4A5E80;
+      --radius:        14px;
+      --shadow:        0 4px 24px rgba(0,31,96,.10);
+      --shadow-card:   0 2px 12px rgba(0,31,96,.07);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--navy);
+      padding: 26px 32px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Velký dekorativní kruh vpravo */
+    .header::before {
+      content: '';
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,206,124,.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    /* Diagonální barevný pruh */
+    .header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(105deg, transparent 55%, rgba(30,202,211,.07) 55%, rgba(30,202,211,.07) 70%, rgba(0,206,124,.05) 70%);
+      pointer-events: none;
+    }
+    /* Tenký accent pruh dole */
+    .header-accent-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00ce7c 0%, #1ecad3 50%, transparent 100%);
+    }
+    .header-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .header-divider {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,.15), transparent);
+      flex-shrink: 0;
+    }
+    .header-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-badge {
+      background: rgba(0,206,124,.15);
+      border: 1px solid rgba(0,206,124,.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #00ce7c;
+      letter-spacing: .3px;
+      white-space: nowrap;
+    }
+
+    /* ── LOGO SVG ── */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-svg { width: 52px; height: 52px; flex-shrink: 0; }
+    .logo-text-wrap { line-height: 1.15; }
+    .logo-text {
+      font-size: 22px;
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+    .logo-text strong { font-weight: 800; }
+    .logo-text-365 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+    .logo-sub {
+      font-size: 11px;
+      color: rgba(255,255,255,.4);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .header-project { text-align: right; }
+    .project-label {
+      font-size: 11px;
+      color: rgba(255,255,255,.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+    .project-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 3px;
+      line-height: 1.25;
+    }
+    .project-client {
+      font-size: 13px;
+      color: rgba(255,255,255,.5);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+    .project-client span {
+      color: var(--green1);
+      font-weight: 600;
+    }
+
+    /* ── ACTIVE BANNER ── */
+    .active-banner {
+      background: linear-gradient(90deg, #001540 0%, #002070 50%, #001540 100%);
+      border-bottom: 1px solid rgba(0,206,124,.22);
+      padding: 0 32px;
+    }
+    .active-banner-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+    }
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--green1);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,206,124,.7); }
+      50%       { box-shadow: 0 0 0 6px rgba(0,206,124,0); }
+    }
+    .active-banner-text {
+      font-size: 13px;
+      color: rgba(255,255,255,.65);
+      font-weight: 400;
+    }
+    .active-banner-text strong { color: var(--cyan); font-weight: 600; }
+
+    /* ── MAIN ── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 24px 48px;
+    }
+
+    /* ── OVERALL PROGRESS ── */
+    .progress-section {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      padding: 22px 24px;
+      margin-bottom: 28px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .progress-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+    .progress-pct {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .timeline {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .timeline-phase {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-phase:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      z-index: 0;
+    }
+    .timeline-phase.done:not(:last-child)::after  { background: var(--done); }
+    .timeline-phase.active:not(:last-child)::after {
+      background: linear-gradient(90deg, var(--done) 0%, var(--border) 100%);
+    }
+    .timeline-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      border: 3px solid var(--border);
+      background: var(--white);
+      color: var(--pending);
+      position: relative;
+      z-index: 2;
+    }
+    .timeline-phase.done .timeline-circle {
+      background: var(--done);
+      border-color: var(--done);
+      color: #fff;
+    }
+    .timeline-phase.active .timeline-circle {
+      background: var(--active);
+      border-color: var(--active);
+      color: #fff;
+      box-shadow: 0 0 0 5px rgba(0,206,124,.18);
+    }
+    .timeline-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 8px;
+      text-align: center;
+      max-width: 90px;
+      line-height: 1.3;
+    }
+    .timeline-phase.active .timeline-label { color: var(--active); }
+    .timeline-phase.done .timeline-label   { color: var(--done); }
+
+    /* ── PHASES GRID ── */
+    .phases-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 680px) {
+      .phases-grid { grid-template-columns: 1fr; }
+      .header-inner { flex-direction: column; }
+      .header-project { text-align: left; }
+    }
+
+    /* ── PHASE CARD ── */
+    .phase-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .phase-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .phase-card.active {
+      border-color: var(--active);
+      box-shadow: 0 0 0 2px rgba(0,206,124,.15), var(--shadow);
+    }
+
+    .phase-card-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .phase-card.active .phase-card-header {
+      background: linear-gradient(135deg, #E8F9F2 0%, #F0FEFA 100%);
+      border-bottom-color: rgba(0,206,124,.18);
+    }
+
+    .phase-num-name { display: flex; align-items: center; gap: 12px; }
+    .phase-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+      background: var(--pending-bg);
+      color: var(--pending);
+    }
+    .phase-card.done   .phase-num { background: var(--done-bg);   color: var(--done); }
+    .phase-card.active .phase-num { background: var(--active-bg); color: var(--active); }
+
+    .phase-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .phase-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-done    { background: var(--done-bg);   color: var(--done); }
+    .badge-active  { background: var(--active-bg); color: var(--active); animation: badge-pulse 2s ease-in-out infinite; }
+    .badge-pending { background: var(--pending-bg); color: var(--pending); }
+    @keyframes badge-pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .65; }
+    }
+
+    .phase-meta {
+      padding: 9px 20px 10px;
+      display: flex;
+      gap: 18px;
+      border-bottom: 1px solid var(--border);
+      background: #FAFCFB;
+    }
+    .meta-item { display: flex; align-items: center; gap: 5px; }
+    .meta-icon { font-size: 12px; }
+    .meta-text { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .meta-val  { font-size: 11px; color: var(--text); font-weight: 600; }
+
+    .phase-steps { padding: 14px 20px 18px; }
+    .steps-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 10px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #F0F5F2;
+    }
+    .step:last-child { border-bottom: none; }
+
+    .step-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-icon.done    { background: var(--done-bg);    color: var(--done); }
+    .step-icon.active  { background: var(--active-bg);  color: var(--active); animation: badge-pulse 2s ease-in-out infinite; }
+    .step-icon.pending { background: var(--pending-bg); color: #CBD5E1; }
+
+    .step-text-wrap { flex: 1; }
+    .step-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .step.done-step    .step-text { color: var(--text-muted); text-decoration: line-through; }
+    .step.active-step  .step-text { color: var(--active); font-weight: 600; }
+    .step.pending-step .step-text { color: #94A3B8; }
+
+    .step-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .step.active-step {
+      background: linear-gradient(90deg, #E6FBF3 0%, transparent 100%);
+      margin: 0 -20px;
+      padding: 7px 20px;
+      border-left: 3px solid var(--active);
+    }
+
+    /* ── PENDING CARD ── */
+    .phase-card.pending-card .phase-card-header { opacity: .75; }
+    .phase-card.pending-card .phase-steps       { opacity: .6; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .footer a { color: var(--active); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-accent-bar"></div>
+
+  <!-- Dekorativní SVG elementy v pozadí -->
+  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 1200 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Diagonální plocha vpravo -->
+    <polygon points="620,0 1200,0 1200,100 720,100" fill="#1ecad3" opacity="0.04"/>
+    <polygon points="680,0 1200,0 1200,100 820,100" fill="#00ce7c" opacity="0.04"/>
+    <!-- Kroužky za logem -->
+    <circle cx="190" cy="50" r="55" fill="none" stroke="#1ecad3" stroke-width="0.8" opacity="0.18"/>
+    <circle cx="190" cy="50" r="38" fill="none" stroke="#00ce7c" stroke-width="0.8" opacity="0.12"/>
+    <!-- Tečky dekor -->
+    <circle cx="860" cy="20" r="3.5" fill="#00ce7c" opacity="0.35"/>
+    <circle cx="900" cy="35" r="2.5" fill="#1ecad3" opacity="0.28"/>
+    <circle cx="880" cy="78" r="2" fill="#00ce7c" opacity="0.22"/>
+    <circle cx="920" cy="62" r="3" fill="#1ecad3" opacity="0.18"/>
+    <!-- Tenká vertikální linka -->
+    <line x1="580" y1="0" x2="640" y2="100" stroke="#1ecad3" stroke-width="0.6" opacity="0.12"/>
+    <line x1="600" y1="0" x2="670" y2="100" stroke="#00ce7c" stroke-width="0.6" opacity="0.08"/>
+  </svg>
+
+  <div class="header-inner">
+
+    <!-- LOGO -->
+    <div class="logo-wrap">
+      <img
+        src="https://static.wixstatic.com/media/3e1eb1_15833eac855344f3b98d404f4d9666ed~mv2.png"
+        alt="EasyPortal 365"
+        style="height:56px; width:auto; object-fit:contain;"
+        onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"
+      />
+      <div id="logo-fallback" style="display:none; align-items:center; gap:8px;">
+        <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#00ce7c,#1ecad3);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fff;">e</div>
+        <div class="logo-text-wrap">
+          <div class="logo-text"><strong>easy</strong>portal</div>
+          <div class="logo-text-365">365</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-divider"></div>
+
+    <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+      <div class="header-badge">Microsoft 365 · SharePoint Online</div>
+      <div style="font-size:11px; color:rgba(255,255,255,.35); letter-spacing:.5px; font-weight:500; text-transform:uppercase;">Celková délka projektu: 3–4 měsíce</div>
+    </div>
+
+    <div class="header-divider"></div>
+
+    <div class="header-project">
+      <div class="project-label">Projekt</div>
+      <div class="project-title">Modernizace digitálního<br>pracovního prostředí</div>
+      <div class="project-client">Klient: <span>Technicoat s.r.o.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ACTIVE BANNER -->
+<div class="active-banner">
+  <div class="active-banner-inner">
+    <div class="pulse-dot"></div>
+    <div class="active-banner-text">
+      Právě probíhá: <strong>Fáze 1 – Analýza digitálního pracovního prostředí</strong>
+      &nbsp;·&nbsp; Aktuální krok: <strong>Podepsání NDA</strong>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- OVERALL TIMELINE -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <div class="progress-title">Celkový průběh projektu</div>
+      <div class="progress-pct">Fáze 1 ze 4 · odhad 3–4 měsíce</div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-phase active">
+        <div class="timeline-circle">1</div>
+        <div class="timeline-label">Analýza</div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-circle">2</div>
+        <div class="timeline-label">Návrh architektury</div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-circle">3</div>
+        <div class="timeline-label">Implementace</div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-circle">4</div>
+        <div class="timeline-label">Adopce a školení</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASES GRID -->
+  <div class="phases-grid">
+
+    <!-- ── FÁZE 1 ── -->
+    <div class="phase-card active">
+      <div class="phase-card-header">
+        <div class="phase-num-name">
+          <div class="phase-num">1</div>
+          <div>
+            <div class="phase-name">Analýza digitálního<br>pracovního prostředí</div>
+          </div>
+        </div>
+        <span class="phase-badge badge-active">⬤ Probíhá</span>
+      </div>
+      <div class="phase-meta">
+        <div class="meta-item">
+          <span class="meta-icon">📅</span>
+          <span class="meta-text">Délka:</span>
+          <span class="meta-val">2–3 týdny</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⏱</span>
+          <span class="meta-text">Pracnost:</span>
+          <span class="meta-val">5 dní</span>
+        </div>
+      </div>
+      <div class="phase-steps">
+        <div class="steps-title">Postup fáze</div>
+
+        <div class="step done-step">
+          <div class="step-icon done">✓</div>
+          <div class="step-text-wrap">
+            <div class="step-text">KickOff schůzka</div>
+          </div>
+        </div>
+
+        <div class="step active-step">
+          <div class="step-icon active">→</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Podepsání NDA</div>
+            <div class="step-sub">Probíhá – čeká se na podpis ze strany klienta</div>
+          </div>
+        </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Odeslání technických požadavků na přístupy</div>
+          </div>
+        </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Zřízení přístupů k prostředí</div>
+          </div>
+        </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Technický audit SharePoint Online</div>
+          </div>
+        </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Audit struktury SharePoint Online</div>
+          </div>
+        </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Audit nastavení oprávnění SharePoint Online</div>
+          </div>
+        </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Audit File Serveru</div>
+          </div>
+        </div>
+
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap">
+            <div class="step-text">Zpracování závěrečných zpráv</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FÁZE 2 ── -->
+    <div class="phase-card pending-card">
+      <div class="phase-card-header">
+        <div class="phase-num-name">
+          <div class="phase-num">2</div>
+          <div>
+            <div class="phase-name">Návrh cílové architektury<br>digitálního prostředí</div>
+          </div>
+        </div>
+        <span class="phase-badge badge-pending">Čeká</span>
+      </div>
+      <div class="phase-meta">
+        <div class="meta-item">
+          <span class="meta-icon">📅</span>
+          <span class="meta-text">Délka:</span>
+          <span class="meta-val">2–3 týdny</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⏱</span>
+          <span class="meta-text">Pracnost:</span>
+          <span class="meta-val">7 dní</span>
+        </div>
+      </div>
+      <div class="phase-steps">
+        <div class="steps-title">Plánované aktivity</div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Návrh cílové struktury intranetu</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Návrh prostředí Microsoft Teams</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Návrh modelu správy přístupů</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Návrh řešení pro zaměstnance výroby</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Governance dokument prostředí</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FÁZE 3 ── -->
+    <div class="phase-card pending-card">
+      <div class="phase-card-header">
+        <div class="phase-num-name">
+          <div class="phase-num">3</div>
+          <div>
+            <div class="phase-name">Implementace řešení</div>
+          </div>
+        </div>
+        <span class="phase-badge badge-pending">Čeká</span>
+      </div>
+      <div class="phase-meta">
+        <div class="meta-item">
+          <span class="meta-icon">📅</span>
+          <span class="meta-text">Délka:</span>
+          <span class="meta-val">3–4 týdny</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⏱</span>
+          <span class="meta-text">Pracnost:</span>
+          <span class="meta-val">12 dní</span>
+        </div>
+      </div>
+      <div class="phase-steps">
+        <div class="steps-title">Plánované aktivity</div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Konfigurace prostředí Microsoft 365</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Implementace intranetového portálu</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Migrace dokumentů do nových struktur</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Implementace řešení pro výrobu (kiosky)</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Ověření funkčnosti řešení</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FÁZE 4 ── -->
+    <div class="phase-card pending-card">
+      <div class="phase-card-header">
+        <div class="phase-num-name">
+          <div class="phase-num">4</div>
+          <div>
+            <div class="phase-name">Zavedení řešení<br>a školení uživatelů</div>
+          </div>
+        </div>
+        <span class="phase-badge badge-pending">Čeká</span>
+      </div>
+      <div class="phase-meta">
+        <div class="meta-item">
+          <span class="meta-icon">📅</span>
+          <span class="meta-text">Délka:</span>
+          <span class="meta-val">2 týdny</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⏱</span>
+          <span class="meta-text">Pracnost:</span>
+          <span class="meta-val">5 dní</span>
+        </div>
+      </div>
+      <div class="phase-steps">
+        <div class="steps-title">Plánované aktivity</div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Školení práce v Microsoft Teams</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Školení práce se SharePoint intranetem</div></div>
+        </div>
+        <div class="step pending-step">
+          <div class="step-icon pending">○</div>
+          <div class="step-text-wrap"><div class="step-text">Podpora adopce nového pracovního prostředí</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phases-grid -->
+</div><!-- /main -->
+
+<div class="footer">
+  EasyPortal 365 · accelapps s.r.o. · <a href="mailto:kamil.jurik@accelapps.cz">kamil.jurik@accelapps.cz</a> · +420 606 714 566
+</div>
+
+</body>
+</html>
